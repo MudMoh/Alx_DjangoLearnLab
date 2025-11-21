@@ -1,0 +1,8 @@
+Superuser 
+username: MudMoh
+pass: 12345
+email: example@gmail.com
+
+username: MudsM
+pass: not sure
+email: not sure
