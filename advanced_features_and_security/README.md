@@ -44,3 +44,10 @@ Groups and permissions can be managed through Django admin under Groups and User
 - All forms include {% csrf_token %} for CSRF protection
 - Views use Django ORM for safe queries, avoiding SQL injection
 - Content Security Policy not implemented (requires django-csp package)
+
+## HTTPS and Secure Redirects
+
+- SECURE_SSL_REDIRECT=True redirects all HTTP requests to HTTPS
+- SECURE_HSTS_SECONDS=31536000 enforces HTTPS for one year
+- SECURE_HSTS_INCLUDE_SUBDOMAINS=True and SECURE_HSTS_PRELOAD=True for comprehensive HSTS
+- Deployment requires SSL/TLS certificates on web server
