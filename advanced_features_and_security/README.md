@@ -35,3 +35,12 @@ To test:
 ## Management
 
 Groups and permissions can be managed through Django admin under Groups and Users sections.
+
+## Security Measures
+
+- DEBUG set to False for production
+- SECURE_BROWSER_XSS_FILTER, X_FRAME_OPTIONS='DENY', SECURE_CONTENT_TYPE_NOSNIFF enabled
+- CSRF_COOKIE_SECURE and SESSION_COOKIE_SECURE set to True for HTTPS
+- All forms include {% csrf_token %} for CSRF protection
+- Views use Django ORM for safe queries, avoiding SQL injection
+- Content Security Policy not implemented (requires django-csp package)
