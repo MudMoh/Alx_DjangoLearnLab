@@ -17,6 +17,7 @@ class BookForm(ModelForm):
         model = Book
         fields = ['title', 'author', 'publication_year']
 
+@permission_required('relationship_app.can_view_book')
 def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
@@ -61,7 +62,7 @@ def librarian_view(request):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
-@permission_required('relationship_app.can_add_book')
+@permission_required('relationship_app.can_create_book')
 def add_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
@@ -72,7 +73,7 @@ def add_book(request):
         form = BookForm()
     return render(request, 'relationship_app/add_book.html', {'form': form})
 
-@permission_required('relationship_app.can_change_book')
+@permission_required('relationship_app.can_edit_book')
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
