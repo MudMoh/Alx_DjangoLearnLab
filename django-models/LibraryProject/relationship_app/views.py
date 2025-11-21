@@ -14,11 +14,12 @@ from .models import Book, Library, UserProfile
 class BookForm(ModelForm):
     class Meta:
         model = Book
-        fields = ['title', 'author']
+        fields = ['title', 'author', 'publication_year']
 
 def list_books(request):
     books = Book.objects.all()
-    return render(request, 'list_books.html', {'books': books})
+    book_list = "\n".join([f"{book.title} by {book.author.name}" for book in books])
+    return HttpResponse(book_list)
 
 class LibraryDetailView(DetailView):
     model = Library
