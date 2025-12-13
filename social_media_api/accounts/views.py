@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 
-User = get_user_model()
+CustomUser = get_user_model()
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -44,8 +44,8 @@ def user_profile(request):
 @permission_classes([IsAuthenticated])
 def follow_user(request, user_id):
     try:
-        user_to_follow = User.objects.get(id=user_id)
-    except User.DoesNotExist:
+        user_to_follow = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.user == user_to_follow:
@@ -61,8 +61,8 @@ def follow_user(request, user_id):
 @permission_classes([IsAuthenticated])
 def unfollow_user(request, user_id):
     try:
-        user_to_unfollow = User.objects.get(id=user_id)
-    except User.DoesNotExist:
+        user_to_unfollow = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if not request.user.following.filter(id=user_to_unfollow.id).exists():
@@ -72,6 +72,6 @@ def unfollow_user(request, user_id):
     return Response({'message': f'Unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
 
 class UserListView(generics.ListAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
