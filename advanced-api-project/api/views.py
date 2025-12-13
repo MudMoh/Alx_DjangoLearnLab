@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, mixins
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from .models import Book
 from .serializers import BookSerializer
 
