@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from .models import Post, Comment, Like
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
@@ -67,10 +68,7 @@ def user_feed(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like_post(request, post_id):
-    try:
-        post = Post.objects.get(id=post_id)
-    except Post.DoesNotExist:
-        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+    post = get_object_or_404(Post, pk=post_id)
 
     like, created = Like.objects.get_or_create(user=request.user, post=post)
     if created:
@@ -92,8 +90,9 @@ def like_post(request, post_id):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def unlike_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
     try:
-        like = Like.objects.get(user=request.user, post_id=post_id)
+        like = Like.objects.get(user=request.user, post=post)
         like.delete()
         return Response({'message': 'Post unliked'}, status=status.HTTP_200_OK)
     except Like.DoesNotExist:
