@@ -27,10 +27,10 @@ A simple blog application built with Django, featuring user authentication, post
 ## Blog Posts
 
 - **List Posts**: `/posts/` - View all posts
-- **View Post**: `/posts/<id>/` - View a specific post
-- **Create Post**: `/posts/new/` - Create a new post (requires login)
-- **Edit Post**: `/posts/<id>/edit/` - Edit a post (author only)
-- **Delete Post**: `/posts/<id>/delete/` - Delete a post (author only)
+- **View Post**: `/post/<id>/` - View a specific post
+- **Create Post**: `/post/new/` - Create a new post (requires login)
+- **Edit Post**: `/post/<id>/update/` - Edit a post (author only)
+- **Delete Post**: `/post/<id>/delete/` - Delete a post (author only)
 
 ## Security
 
