@@ -14,17 +14,24 @@ This Django project demonstrates advanced API development using Django REST Fram
 
 ## Views
 
-- **BookListView**: A generic ListCreateAPIView for listing all books (GET) and creating new books (POST). Requires authentication for POST.
-- **BookDetailView**: A generic RetrieveUpdateDestroyAPIView for retrieving, updating, and deleting individual books by ID. Requires authentication for write operations.
+- **BookListView**: A generic ListAPIView for listing all books (GET). Allows access to all users.
+- **BookDetailView**: A generic RetrieveAPIView for retrieving a single book by ID (GET). Allows access to all users.
+- **BookCreateView**: A generic CreateAPIView for creating new books (POST). Requires authentication.
+- **BookUpdateView**: A generic UpdateAPIView for updating existing books (PUT/PATCH). Requires authentication.
+- **BookDeleteView**: A generic DestroyAPIView for deleting books (DELETE). Requires authentication.
 
 ## Permissions
 
-All views use `IsAuthenticatedOrReadOnly` permission, allowing unauthenticated users to read data but requiring authentication for create, update, and delete operations.
+- Read views (List and Detail) use `AllowAny` permission.
+- Write views (Create, Update, Delete) use `IsAuthenticated` permission.
 
 ## URLs
 
-- `/api/books/`: Book list and create endpoint.
-- `/api/books/<int:pk>/`: Book detail, update, and delete endpoint.
+- `/api/books/`: List all books (GET).
+- `/api/books/<int:pk>/`: Retrieve a specific book (GET).
+- `/api/books/create/`: Create a new book (POST).
+- `/api/books/<int:pk>/update/`: Update a specific book (PUT/PATCH).
+- `/api/books/<int:pk>/delete/`: Delete a specific book (DELETE).
 
 ## Testing
 
