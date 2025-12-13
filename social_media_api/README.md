@@ -7,7 +7,8 @@ This is a Django REST Framework-based Social Media API that provides user authen
 - User registration and login with token authentication
 - Custom user model with bio and profile picture
 - User profiles with follower/following counts
-- RESTful API endpoints
+- Posts and comments functionality
+- RESTful API endpoints with pagination and filtering
 
 ## Setup Instructions
 
@@ -48,6 +49,48 @@ This is a Django REST Framework-based Social Media API that provides user authen
   - Headers: `Authorization: Token <your_token>`
   - Returns: User profile data including followers and following counts
 
+### Posts
+
+- **GET** `/api/posts/` - List all posts (paginated, supports filtering and search)
+  - Query params: `?page=1&page_size=10&search=keyword&author=1`
+  - Returns: Paginated list of posts with comments count
+
+- **POST** `/api/posts/` - Create a new post (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Body: `{"title": "string", "content": "string"}`
+  - Returns: Created post data
+
+- **GET** `/api/posts/{id}/` - Get specific post with comments
+  - Returns: Post data including nested comments
+
+- **PUT/PATCH** `/api/posts/{id}/` - Update post (owner only)
+  - Headers: `Authorization: Token <your_token>`
+  - Body: `{"title": "string", "content": "string"}`
+
+- **DELETE** `/api/posts/{id}/` - Delete post (owner only)
+  - Headers: `Authorization: Token <your_token>`
+
+### Comments
+
+- **GET** `/api/comments/` - List all comments (paginated, supports filtering)
+  - Query params: `?page=1&page_size=10&post=1&author=1`
+  - Returns: Paginated list of comments
+
+- **POST** `/api/comments/` - Create a new comment (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Body: `{"post": 1, "content": "string"}`
+  - Returns: Created comment data
+
+- **GET** `/api/comments/{id}/` - Get specific comment
+  - Returns: Comment data
+
+- **PUT/PATCH** `/api/comments/{id}/` - Update comment (owner only)
+  - Headers: `Authorization: Token <your_token>`
+  - Body: `{"content": "string"}`
+
+- **DELETE** `/api/comments/{id}/` - Delete comment (owner only)
+  - Headers: `Authorization: Token <your_token>`
+
 ## User Model
 
 The custom User model extends Django's AbstractUser with:
@@ -61,6 +104,10 @@ The custom User model extends Django's AbstractUser with:
 2. Use the returned token in the Authorization header for authenticated requests
 3. Login via POST to `/api/accounts/login/` to get a token
 4. Access profile via GET to `/api/accounts/profile/` with token
+5. Create posts via POST to `/api/posts/` with token
+6. View posts via GET to `/api/posts/`
+7. Add comments via POST to `/api/comments/` with token
+8. Filter posts by search: GET `/api/posts/?search=keyword`
 
 ## Project Structure
 
@@ -70,3 +117,8 @@ The custom User model extends Django's AbstractUser with:
   - `serializers.py` - API serializers
   - `views.py` - API views
   - `urls.py` - URL patterns
+- `posts/` - Posts and comments functionality
+  - `models.py` - Post and Comment models
+  - `serializers.py` - API serializers
+  - `views.py` - ViewSets with permissions
+  - `urls.py` - Router-based URL patterns
