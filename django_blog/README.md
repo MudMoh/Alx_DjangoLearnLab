@@ -7,8 +7,9 @@ A simple blog application built with Django, featuring user authentication, post
 - User registration and login
 - Profile management
 - Post display and CRUD operations
+- Comment system for posts
 - Secure authentication with CSRF protection
-- Author-only editing and deletion of posts
+- Author-only editing and deletion of posts and comments
 
 ## Setup
 
@@ -31,6 +32,8 @@ A simple blog application built with Django, featuring user authentication, post
 - **Create Post**: `/post/new/` - Create a new post (requires login)
 - **Edit Post**: `/post/<id>/update/` - Edit a post (author only)
 - **Delete Post**: `/post/<id>/delete/` - Delete a post (author only)
+- **Edit Comment**: `/comment/<id>/edit/` - Edit a comment (author only)
+- **Delete Comment**: `/comment/<id>/delete/` - Delete a comment (author only)
 
 ## Security
 
