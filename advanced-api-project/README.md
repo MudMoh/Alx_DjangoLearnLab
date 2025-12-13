@@ -30,8 +30,8 @@ This Django project demonstrates advanced API development using Django REST Fram
 - `/api/books/`: List all books (GET).
 - `/api/books/<int:pk>/`: Retrieve a specific book (GET).
 - `/api/books/create/`: Create a new book (POST).
-- `/api/books/<int:pk>/update/`: Update a specific book (PUT/PATCH).
-- `/api/books/<int:pk>/delete/`: Delete a specific book (DELETE).
+- `/api/books/update/<int:pk>/`: Update a specific book (PUT/PATCH).
+- `/api/books/delete/<int:pk>/`: Delete a specific book (DELETE).
 
 ## Testing
 
