@@ -14,7 +14,7 @@ This Django project demonstrates advanced API development using Django REST Fram
 
 ## Views
 
-- **BookListView**: Custom view using ListModelMixin for listing all books (GET). Allows access to all users.
+- **BookListView**: Custom view using ListModelMixin for listing all books (GET). Allows access to all users. Supports filtering by title, author, publication_year; searching on title and author name; ordering by title and publication_year.
 - **BookDetailView**: Custom view using RetrieveModelMixin for retrieving a single book by ID (GET). Allows access to all users.
 - **BookCreateView**: Custom view using CreateModelMixin for creating new books (POST). Requires authentication.
 - **BookUpdateView**: Custom view using UpdateModelMixin for updating existing books (PUT/PATCH). Requires authentication.
@@ -32,6 +32,19 @@ This Django project demonstrates advanced API development using Django REST Fram
 - `/api/books/create/`: Create a new book (POST).
 - `/api/books/update/<int:pk>/`: Update a specific book (PUT/PATCH).
 - `/api/books/delete/<int:pk>/`: Delete a specific book (DELETE).
+
+## Query Parameters
+
+The book list endpoint supports the following query parameters:
+
+- **Filtering**: `?title=<value>`, `?author=<id>`, `?publication_year=<year>`
+- **Searching**: `?search=<query>` (searches in title and author name)
+- **Ordering**: `?ordering=<field>` (fields: title, publication_year; use - for descending, e.g., ?ordering=-publication_year)
+
+Examples:
+- `/api/books/?publication_year=2020`
+- `/api/books/?search=Test`
+- `/api/books/?ordering=title`
 
 ## Testing
 

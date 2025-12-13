@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics, mixins
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
 
@@ -8,10 +10,15 @@ from .serializers import BookSerializer
 
 # BookListView: Custom view using ListModelMixin for listing all books (GET).
 # Uses BookSerializer for serialization and AllowAny for permissions (read-only for all).
+# Includes filtering by title, author, publication_year; searching on title and author name; ordering by title and publication_year.
 class BookListView(mixins.ListModelMixin, generics.GenericAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['title', 'author', 'publication_year']
+    search_fields = ['title', 'author__name']
+    ordering_fields = ['title', 'publication_year']
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
