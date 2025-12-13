@@ -122,3 +122,39 @@ def delete_comment(request, pk):
         messages.success(request, 'Comment deleted!')
         return redirect('post_detail', pk=comment.post.pk)
     return render(request, 'blog/comment_confirm_delete.html', {'comment': comment})
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.kwargs['post_pk']})
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
