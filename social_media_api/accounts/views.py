@@ -11,7 +11,7 @@ def register_user(request):
     serializer = UserRegistrationSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        token, created = Token.objects.get_or_create(user=user)
+        token = Token.objects.get(user=user)
         return Response({
             'user': UserProfileSerializer(user).data,
             'token': token.key
