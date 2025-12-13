@@ -8,6 +8,8 @@ This is a Django REST Framework-based Social Media API that provides user authen
 - Custom user model with bio and profile picture
 - User profiles with follower/following counts
 - Posts and comments functionality
+- User follow/unfollow system
+- Personalized feed showing posts from followed users
 - RESTful API endpoints with pagination and filtering
 
 ## Setup Instructions
@@ -91,6 +93,23 @@ This is a Django REST Framework-based Social Media API that provides user authen
 - **DELETE** `/api/comments/{id}/` - Delete comment (owner only)
   - Headers: `Authorization: Token <your_token>`
 
+### Follows
+
+- **POST** `/api/accounts/follow/{user_id}/` - Follow a user (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Returns: Success message
+
+- **POST** `/api/accounts/unfollow/{user_id}/` - Unfollow a user (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Returns: Success message
+
+### Feed
+
+- **GET** `/api/feed/` - Get personalized feed of posts from followed users (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Query params: `?page=1&page_size=10`
+  - Returns: Paginated posts from followed users
+
 ## User Model
 
 The custom User model extends Django's AbstractUser with:
@@ -108,6 +127,8 @@ The custom User model extends Django's AbstractUser with:
 6. View posts via GET to `/api/posts/`
 7. Add comments via POST to `/api/comments/` with token
 8. Filter posts by search: GET `/api/posts/?search=keyword`
+9. Follow users via POST to `/api/accounts/follow/{user_id}/` with token
+10. View your feed via GET to `/api/feed/` with token
 
 ## Project Structure
 
