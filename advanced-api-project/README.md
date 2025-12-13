@@ -14,11 +14,11 @@ This Django project demonstrates advanced API development using Django REST Fram
 
 ## Views
 
-- **BookListView**: A generic ListAPIView for listing all books (GET). Allows access to all users.
-- **BookDetailView**: A generic RetrieveAPIView for retrieving a single book by ID (GET). Allows access to all users.
-- **BookCreateView**: A generic CreateAPIView for creating new books (POST). Requires authentication.
-- **BookUpdateView**: A generic UpdateAPIView for updating existing books (PUT/PATCH). Requires authentication.
-- **BookDeleteView**: A generic DestroyAPIView for deleting books (DELETE). Requires authentication.
+- **BookListView**: Custom view using ListModelMixin for listing all books (GET). Allows access to all users.
+- **BookDetailView**: Custom view using RetrieveModelMixin for retrieving a single book by ID (GET). Allows access to all users.
+- **BookCreateView**: Custom view using CreateModelMixin for creating new books (POST). Requires authentication.
+- **BookUpdateView**: Custom view using UpdateModelMixin for updating existing books (PUT/PATCH). Requires authentication.
+- **BookDeleteView**: Custom view using DestroyModelMixin for deleting books (DELETE). Requires authentication.
 
 ## Permissions
 
