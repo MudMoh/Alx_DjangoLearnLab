@@ -40,36 +40,46 @@ def user_profile(request):
     serializer = UserProfileSerializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def follow_user(request, user_id):
-    try:
-        user_to_follow = CustomUser.objects.get(id=user_id)
-    except CustomUser.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+class FollowUserView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
 
-    if request.user == user_to_follow:
-        return Response({'error': 'Cannot follow yourself'}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, user_id):
+        try:
+            user_to_follow = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.user.following.filter(id=user_to_follow.id).exists():
-        return Response({'error': 'Already following this user'}, status=status.HTTP_400_BAD_REQUEST)
+        if request.user == user_to_follow:
+            return Response({'error': 'Cannot follow yourself'}, status=status.HTTP_400_BAD_REQUEST)
 
-    request.user.following.add(user_to_follow)
-    return Response({'message': f'Now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
+        if request.user.following.filter(id=user_to_follow.id).exists():
+            return Response({'error': 'Already following this user'}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def unfollow_user(request, user_id):
-    try:
-        user_to_unfollow = CustomUser.objects.get(id=user_id)
-    except CustomUser.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        request.user.following.add(user_to_follow)
+        # Create notification for the followed user
+        from posts.models import Notification
+        Notification.objects.create(
+            recipient=user_to_follow,
+            sender=request.user,
+            notification_type='follow',
+            message=f'{request.user.username} started following you'
+        )
+        return Response({'message': f'Now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
 
-    if not request.user.following.filter(id=user_to_unfollow.id).exists():
-        return Response({'error': 'Not following this user'}, status=status.HTTP_400_BAD_REQUEST)
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
 
-    request.user.following.remove(user_to_unfollow)
-    return Response({'message': f'Unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
+    def post(self, request, user_id):
+        try:
+            user_to_unfollow = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not request.user.following.filter(id=user_to_unfollow.id).exists():
+            return Response({'error': 'Not following this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.following.remove(user_to_unfollow)
+        return Response({'message': f'Unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
 
 class UserListView(generics.ListAPIView):
     queryset = CustomUser.objects.all()

@@ -10,6 +10,8 @@ This is a Django REST Framework-based Social Media API that provides user authen
 - Posts and comments functionality
 - User follow/unfollow system
 - Personalized feed showing posts from followed users
+- Like/unlike posts functionality
+- Notification system for likes, comments, and follows
 - RESTful API endpoints with pagination and filtering
 
 ## Setup Instructions
@@ -93,6 +95,16 @@ This is a Django REST Framework-based Social Media API that provides user authen
 - **DELETE** `/api/comments/{id}/` - Delete comment (owner only)
   - Headers: `Authorization: Token <your_token>`
 
+### Likes
+
+- **POST** `/api/posts/{post_id}/like/` - Like a post (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Returns: Success message
+
+- **DELETE** `/api/posts/{post_id}/unlike/` - Unlike a post (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Returns: Success message
+
 ### Follows
 
 - **POST** `/api/accounts/follow/{user_id}/` - Follow a user (requires authentication)
@@ -100,6 +112,17 @@ This is a Django REST Framework-based Social Media API that provides user authen
   - Returns: Success message
 
 - **POST** `/api/accounts/unfollow/{user_id}/` - Unfollow a user (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Returns: Success message
+
+### Notifications
+
+- **GET** `/api/notifications/` - Get user notifications (requires authentication)
+  - Headers: `Authorization: Token <your_token>`
+  - Query params: `?page=1&page_size=10`
+  - Returns: Paginated list of notifications
+
+- **POST** `/api/notifications/{notification_id}/read/` - Mark notification as read (requires authentication)
   - Headers: `Authorization: Token <your_token>`
   - Returns: Success message
 
@@ -129,6 +152,8 @@ The custom User model extends Django's AbstractUser with:
 8. Filter posts by search: GET `/api/posts/?search=keyword`
 9. Follow users via POST to `/api/accounts/follow/{user_id}/` with token
 10. View your feed via GET to `/api/feed/` with token
+11. Like posts via POST to `/api/posts/{post_id}/like/` with token
+12. View notifications via GET to `/api/notifications/` with token
 
 ## Project Structure
 
