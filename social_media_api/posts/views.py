@@ -4,8 +4,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Post, Comment, Like, Notification
-from .serializers import PostSerializer, CommentSerializer, LikeSerializer, NotificationSerializer
+from .models import Post, Comment, Like
+from notifications.models import Notification
+from .serializers import PostSerializer, CommentSerializer, LikeSerializer
+from notifications.serializers import NotificationSerializer
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
@@ -37,12 +39,14 @@ class PostViewSet(viewsets.ModelViewSet):
         comment = serializer.save(author=self.request.user)
         # Create notification for post author if not commenting on own post
         if comment.post.author != self.request.user:
+            from django.contrib.contenttypes.models import ContentType
+            post_type = ContentType.objects.get_for_model(comment.post)
             Notification.objects.create(
                 recipient=comment.post.author,
-                sender=self.request.user,
-                notification_type='comment',
-                post=comment.post,
-                message=f'{self.request.user.username} commented on your post "{comment.post.title}"'
+                actor=self.request.user,
+                verb='commented on',
+                target_content_type=post_type,
+                target_object_id=comment.post.id
             )
 
     def get_serializer_context(self):
@@ -72,12 +76,14 @@ def like_post(request, post_id):
     if created:
         # Create notification for post author if not liking own post
         if post.author != request.user:
+            from django.contrib.contenttypes.models import ContentType
+            post_type = ContentType.objects.get_for_model(post)
             Notification.objects.create(
                 recipient=post.author,
-                sender=request.user,
-                notification_type='like',
-                post=post,
-                message=f'{request.user.username} liked your post "{post.title}"'
+                actor=request.user,
+                verb='liked',
+                target_content_type=post_type,
+                target_object_id=post.id
             )
         return Response({'message': 'Post liked'}, status=status.HTTP_201_CREATED)
     else:
@@ -93,25 +99,6 @@ def unlike_post(request, post_id):
     except Like.DoesNotExist:
         return Response({'error': 'Like not found'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def user_notifications(request):
-    notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
-    paginator = PostPagination()
-    paginated_notifications = paginator.paginate_queryset(notifications, request)
-    serializer = NotificationSerializer(paginated_notifications, many=True)
-    return paginator.get_paginated_response(serializer.data)
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def mark_notification_read(request, notification_id):
-    try:
-        notification = Notification.objects.get(id=notification_id, recipient=request.user)
-        notification.is_read = True
-        notification.save()
-        return Response({'message': 'Notification marked as read'}, status=status.HTTP_200_OK)
-    except Notification.DoesNotExist:
-        return Response({'error': 'Notification not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')

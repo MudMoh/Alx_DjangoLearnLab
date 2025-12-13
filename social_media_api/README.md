@@ -154,6 +154,7 @@ The custom User model extends Django's AbstractUser with:
 10. View your feed via GET to `/api/feed/` with token
 11. Like posts via POST to `/api/posts/{post_id}/like/` with token
 12. View notifications via GET to `/api/notifications/` with token
+13. Mark notifications as read via POST to `/api/notifications/{id}/read/` with token
 
 ## Project Structure
 

@@ -58,12 +58,15 @@ class FollowUserView(generics.GenericAPIView):
 
         request.user.following.add(user_to_follow)
         # Create notification for the followed user
-        from posts.models import Notification
+        from notifications.models import Notification
+        from django.contrib.contenttypes.models import ContentType
+        user_type = ContentType.objects.get_for_model(user_to_follow)
         Notification.objects.create(
             recipient=user_to_follow,
-            sender=request.user,
-            notification_type='follow',
-            message=f'{request.user.username} started following you'
+            actor=request.user,
+            verb='started following',
+            target_content_type=user_type,
+            target_object_id=user_to_follow.id
         )
         return Response({'message': f'Now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
 

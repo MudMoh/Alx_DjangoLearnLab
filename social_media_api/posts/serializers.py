@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment, Like, Notification
+from .models import Post, Comment, Like
 
 class CommentSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source='author.username', read_only=True)
@@ -40,16 +40,3 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = ('id', 'user', 'user_username', 'post', 'created_at')
         read_only_fields = ('user', 'created_at')
-
-class NotificationSerializer(serializers.ModelSerializer):
-    sender_username = serializers.CharField(source='sender.username', read_only=True)
-    recipient_username = serializers.CharField(source='recipient.username', read_only=True)
-
-    class Meta:
-        model = Notification
-        fields = ('id', 'recipient', 'recipient_username', 'sender', 'sender_username', 'notification_type', 'post', 'message', 'is_read', 'created_at')
-        read_only_fields = ('recipient', 'sender', 'created_at')
-
-    def create(self, validated_data):
-        validated_data['author'] = self.context['request'].user
-        return super().create(validated_data)
