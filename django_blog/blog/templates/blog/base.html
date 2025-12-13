@@ -14,6 +14,10 @@
         <nav>
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'post_list' %}">Posts</a>
+            <form action="{% url 'search_posts' %}" method="get" style="display: inline;">
+                <input type="text" name="q" placeholder="Search posts..." required>
+                <button type="submit">Search</button>
+            </form>
             {% if user.is_authenticated %}
             <a href="{% url 'profile' %}">Profile</a>
             <a href="{% url 'logout' %}">Logout</a>

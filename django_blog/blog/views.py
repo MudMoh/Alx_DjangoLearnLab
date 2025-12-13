@@ -6,7 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
-from .models import Post, Comment
+from django.db.models import Q
+from .models import Post, Comment, Tag
 from .forms import CommentForm
 
 # Create your views here.
@@ -71,7 +72,7 @@ class PostDetailView(DetailView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'blog/post_form.html'
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'tags']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -80,7 +81,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'blog/post_form.html'
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'tags']
 
     def test_func(self):
         post = self.get_object()
@@ -122,6 +123,18 @@ def delete_comment(request, pk):
         messages.success(request, 'Comment deleted!')
         return redirect('post_detail', pk=comment.post.pk)
     return render(request, 'blog/comment_confirm_delete.html', {'comment': comment})
+
+def search_posts(request):
+    query = request.GET.get('q', '')
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(Q(title__icontains=query) | Q(content__icontains=query) | Q(tags__name__icontains=query)).distinct()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
+def posts_by_tag(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    posts = tag.posts.all()
+    return render(request, 'blog/tag_posts.html', {'posts': posts, 'tag': tag})
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
