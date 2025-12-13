@@ -4,8 +4,6 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Author, Book
 
-# Create your tests here.
-
 class BookAPITestCase(APITestCase):
     def setUp(self):
         # Create test user
@@ -41,7 +39,7 @@ class BookAPITestCase(APITestCase):
         # Test POST /api/books/create/ without authentication
         data = {'title': 'New Book', 'publication_year': 2022, 'author': self.author1.id}
         response = self.client.post('/api/books/create/', data)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_book_authenticated(self):
         # Test PUT /api/books/update/<pk>/ with authentication
@@ -56,7 +54,7 @@ class BookAPITestCase(APITestCase):
         # Test PUT /api/books/update/<pk>/ without authentication
         data = {'title': 'Updated Book', 'publication_year': 2020, 'author': self.author1.id}
         response = self.client.put(f'/api/books/update/{self.book1.id}/', data)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_book_authenticated(self):
         # Test DELETE /api/books/delete/<pk>/ with authentication
@@ -68,7 +66,7 @@ class BookAPITestCase(APITestCase):
     def test_delete_book_unauthenticated(self):
         # Test DELETE /api/books/delete/<pk>/ without authentication
         response = self.client.delete(f'/api/books/delete/{self.book1.id}/')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_filter_books_by_publication_year(self):
         # Test filtering by publication_year

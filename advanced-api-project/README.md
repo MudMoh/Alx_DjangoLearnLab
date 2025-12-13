@@ -52,9 +52,32 @@ Examples:
 - POST, PUT, PATCH, DELETE require authentication.
 - Serializer validation prevents future publication years.
 
+## Testing
+
+The project includes comprehensive unit tests for the API endpoints in `api/test_views.py`.
+
+### Running Tests
+
+Run the test suite using Django's manage.py command:
+
+```bash
+python manage.py test api.test_views
+```
+
+### Test Coverage
+
+The tests cover:
+- CRUD operations: Creating, retrieving, updating, and deleting books.
+- Filtering: By publication_year.
+- Searching: In title and author name.
+- Ordering: By title and publication_year.
+- Permissions: Authenticated vs. unauthenticated access for different endpoints.
+
+All tests use a separate test database and should pass without issues.
+
 ## Setup
 
-1. Install dependencies: `pip install django djangorestframework`
+1. Install dependencies: `pip install django djangorestframework django-filter`
 2. Run migrations: `python manage.py migrate`
 3. Run server: `python manage.py runserver`
 4. Access API at `http://127.0.0.1:8000/api/`
