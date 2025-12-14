@@ -8,6 +8,6 @@ router.register(r'comments', CommentViewSet)
 
 urlpatterns = router.urls + [
     path('feed/', user_feed, name='user_feed'),
-    path('posts/<int:post_id>/like/', like_post, name='like_post'),
-    path('posts/<int:post_id>/unlike/', unlike_post, name='unlike_post'),
+    path('posts/<int:pk>/like/', like_post, name='like_post'),
+    path('posts/<int:pk>/unlike/', unlike_post, name='unlike_post'),
 ]

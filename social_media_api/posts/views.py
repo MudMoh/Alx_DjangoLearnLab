@@ -1,10 +1,9 @@
-from rest_framework import viewsets, permissions, filters, status
+from rest_framework import viewsets, permissions, filters, status, generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
 from .models import Post, Comment, Like
 from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
@@ -67,7 +66,7 @@ def user_feed(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def like_post(request, post_id):
+def like_post(request, pk):
     post = generics.get_object_or_404(Post, pk=pk)
 
     like, created = Like.objects.get_or_create(user=request.user, post=post)
@@ -89,7 +88,7 @@ def like_post(request, post_id):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def unlike_post(request, post_id):
+def unlike_post(request, pk):
     post = generics.get_object_or_404(Post, pk=pk)
     try:
         like = Like.objects.get(user=request.user, post=post)
