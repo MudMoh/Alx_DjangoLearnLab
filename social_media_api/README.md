@@ -146,6 +146,61 @@ The custom User model extends Django's AbstractUser with:
 2. Use the returned token in the Authorization header for authenticated requests
 3. Login via POST to `/api/accounts/login/` to get a token
 4. Access profile via GET to `/api/accounts/profile/` with token
+
+## Deployment to Production
+
+### Heroku Deployment
+
+1. **Install Heroku CLI** and login:
+   ```bash
+   heroku login
+   ```
+
+2. **Create Heroku app**:
+   ```bash
+   heroku create your-app-name
+   ```
+
+3. **Set environment variables**:
+   ```bash
+   heroku config:set SECRET_KEY=your-secret-key-here
+   heroku config:set DEBUG=False
+   heroku config:set ALLOWED_HOSTS=your-app-name.herokuapp.com
+   ```
+
+4. **Deploy to Heroku**:
+   ```bash
+   git add .
+   git commit -m "Deploy to production"
+   git push heroku main
+   ```
+
+5. **Run migrations on Heroku**:
+   ```bash
+   heroku run python manage.py migrate
+   ```
+
+6. **Create superuser (optional)**:
+   ```bash
+   heroku run python manage.py createsuperuser
+   ```
+
+### Alternative Deployment Options
+
+- **AWS Elastic Beanstalk**: Use EB CLI for deployment
+- **DigitalOcean**: Use App Platform or Droplets with Docker
+- **Railway**: Modern platform with Git integration
+
+### Production Checklist
+
+- [ ] DEBUG = False
+- [ ] SECRET_KEY set via environment variables
+- [ ] ALLOWED_HOSTS configured
+- [ ] HTTPS enabled
+- [ ] Static files collected
+- [ ] Database configured
+- [ ] Logging set up
+- [ ] Monitoring configured
 5. Create posts via POST to `/api/posts/` with token
 6. View posts via GET to `/api/posts/`
 7. Add comments via POST to `/api/comments/` with token
